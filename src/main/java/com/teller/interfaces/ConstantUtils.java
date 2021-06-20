@@ -1,4 +1,4 @@
-package com.teller;
+package com.teller.interfaces;
 
 public interface ConstantUtils {
 	

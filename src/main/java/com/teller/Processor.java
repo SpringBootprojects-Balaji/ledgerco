@@ -6,9 +6,11 @@ import java.util.Scanner;
 
 
 import com.teller.Models.Loan;
+import com.teller.interfaces.ConstantUtils;
+import com.teller.interfaces.Initializer;
 
 
-public class Processor {
+public class Processor implements Initializer {
 	
 	
 	HashMap<String, Loan> loan_details;
@@ -38,7 +40,7 @@ public class Processor {
 
 	}
 
-	private void initialize(String path) throws FileNotFoundException {
+	public void initialize(String path) throws FileNotFoundException {
 		scanner = new FileUtils().getscanner(path);
 		generalutils = new GeneralUtils();
 		loan_details = new HashMap<String, Loan>();
@@ -46,6 +48,7 @@ public class Processor {
 
 	}
 
+	//Read and set Loan
 	private void setLoan(String loanarr[]) {
 
 		Loan loan = new Loan(loanarr[1].toString(), loanarr[2].toString(), Double.parseDouble(loanarr[3]),
@@ -56,6 +59,7 @@ public class Processor {
 
 	}
 
+	//Read and set Payment
 	private void setPayment(String paymentarr[]) {
 
 		Loan loan = loan_details.get(paymentarr[1].toString() + paymentarr[2].toString());
@@ -66,14 +70,15 @@ public class Processor {
 	    loan.setPaymentmonth(paymentmonth);
 
 	}
-
+	
+	//Read and calculate balance
 	private void calculatebalance(String balancearr[]) {
 
 		Double[] output;
 		Loan loan = loan_details.get(balancearr[1].toString() + balancearr[2].toString());
 		Integer emimonths = Integer.parseInt(balancearr[3]);
 	
-			output = loan.calculatebalance(loan, emimonths);
+			output = loan.calculatebalance(emimonths);
 		
 
 		System.out

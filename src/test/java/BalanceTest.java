@@ -15,7 +15,7 @@ public class BalanceTest {
 	
 		Double[] result = {1326.0,9.0};
 
-		assertArrayEquals(result,loan.calculatebalance(loan, 3));
+		assertArrayEquals(result,loan.calculatebalance(3));
 	}
 	
 	@Test
@@ -26,7 +26,7 @@ public class BalanceTest {
 	
 		Double[] result = {3652.0,4.0};
 
-		assertArrayEquals(result,loan.calculatebalance(loan, 6));
+		assertArrayEquals(result,loan.calculatebalance(6));
 	}
 
 }

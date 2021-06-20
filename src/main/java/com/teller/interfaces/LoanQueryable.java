@@ -4,5 +4,5 @@ import com.teller.Models.Loan;
 
 public interface LoanQueryable {
 
-	public Double[] calculatebalance(Loan loan, Integer emi_months);
+	public Double[] calculatebalance(Integer emi_months);
 }

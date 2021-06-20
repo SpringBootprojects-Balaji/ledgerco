@@ -6,7 +6,7 @@ import com.teller.interfaces.LoanCalculatable;
 import com.teller.interfaces.LoanPayable;
 import com.teller.interfaces.LoanQueryable;
 
-public class Loan implements LoanCalculatable,LoanPayable,LoanQueryable {
+public class Loan implements LoanCalculatable, LoanPayable, LoanQueryable {
 
 	private String bankname;
 	private String username;
@@ -60,9 +60,8 @@ public class Loan implements LoanCalculatable,LoanPayable,LoanQueryable {
 		return paymentmonth;
 	}
 
-	
 	public void setPaymentamount(Integer paymentamount) {
-		this.paymentamount = paymentamount ;
+		this.paymentamount = paymentamount;
 	}
 
 	/**
@@ -71,40 +70,39 @@ public class Loan implements LoanCalculatable,LoanPayable,LoanQueryable {
 	public void setPaymentmonth(Integer paymentmonth) {
 		this.paymentmonth = paymentmonth;
 	}
-	public Double[] calculatebalance(Loan loan, Integer emi_months) {
+
+	public Double[] calculatebalance(Integer emi_months) {
 
 		Double[] data = new Double[2];
-		
-		if (emi_months < loan.getPaymentmonth() || loan.getPaymentamount() == null)
+		Loan loan = this;
+		Double loanamt = loan.calculateamount(); // total amount
+		Double intrestamt = loan.calculateinterestpermonth(); // interest
+		Double totalamountpaid = intrestamt * emi_months;
+		if (emi_months < loan.getPaymentmonth() || loan.getPaymentamount() == null) // No payment made
 		{
-			
-		
-		data[0] = Math.ceil(
-				loan.calculateamount() - (loan.calculateamount() - loan.calculateinterestpermonth() * emi_months));
 
-		data[1] = Math.ceil(loan.getNumberofMonths() - emi_months);
+			data[0] = totalamountpaid;
 
-		
-		
-		}
-		else
+			data[1] = Math.ceil(loan.getNumberofMonths() - emi_months);
+
+		} else // some payment made
 		{
-			Double loanamt = loan.calculateamount();
-			Double totalpaid = loan.calculateinterestpermonth() * emi_months + loan.getPaymentamount();
+			Integer latestpaymentamount = loan.getPaymentamount();
 
-			Double remamount = Math.ceil(loanamt - totalpaid);
+			Double totalpaid = totalamountpaid + latestpaymentamount; // Total paid amount including latest payment
+
+			Double remamounttopay = Math.ceil(loanamt - totalpaid);
 			data[0] = setAmountmax(Math.ceil(totalpaid), loanamt);
-			data[1] = Math.ceil(remamount / loan.calculateinterestpermonth());	
+			data[1] = Math.ceil(remamounttopay / intrestamt); // gives number of months
 		}
-		
+
 		return data;
 
 	}
 
+	private Double setAmountmax(Double totalpaid, Double loanval) {
 
-	private Double setAmountmax(Double value, Double loanval) {
-
-		return (value > loanval) ? loanval : value;
+		return (totalpaid > loanval) ? loanval : totalpaid;
 
 	}
 

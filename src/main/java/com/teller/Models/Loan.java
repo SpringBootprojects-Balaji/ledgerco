@@ -1,0 +1,111 @@
+package com.teller.Models;
+
+import java.util.HashSet;
+
+import com.teller.interfaces.LoanCalculatable;
+import com.teller.interfaces.LoanPayable;
+import com.teller.interfaces.LoanQueryable;
+
+public class Loan implements LoanCalculatable,LoanPayable,LoanQueryable {
+
+	private String bankname;
+	private String username;
+	private Double principal;
+	private Double no_of_years;
+	private Double rate_of_interest;
+	private Integer paymentamount;
+	private Integer paymentmonth;
+
+	public Loan(String bankname, String username, Double principal, Double no_of_years, Double rate_of_interest) {
+
+		this.bankname = bankname;
+		this.username = username;
+		this.principal = principal;
+		this.no_of_years = no_of_years;
+		this.rate_of_interest = rate_of_interest;
+	}
+
+	/**
+	 * @return the principal
+	 */
+	public Double getPrincipal() {
+		return principal;
+	}
+
+	public Double calculateamount() {
+
+		return this.principal + ((this.principal * this.no_of_years * this.rate_of_interest) / 100);
+
+	}
+
+	public Double calculateinterestpermonth() {
+
+		return Math.ceil(calculateamount() / getNumberofMonths());
+
+	}
+
+	public Double getNumberofMonths() {
+
+		return (no_of_years * 12);
+	}
+
+	public Integer getPaymentamount() {
+		return paymentamount;
+	}
+
+	/**
+	 * @return the paymentmonth
+	 */
+	public Integer getPaymentmonth() {
+		return paymentmonth;
+	}
+
+	
+	public void setPaymentamount(Integer paymentamount) {
+		this.paymentamount = paymentamount ;
+	}
+
+	/**
+	 * @return the paymentmonth
+	 */
+	public void setPaymentmonth(Integer paymentmonth) {
+		this.paymentmonth = paymentmonth;
+	}
+	public Double[] calculatebalance(Loan loan, Integer emi_months) {
+
+		Double[] data = new Double[2];
+		
+		if (emi_months < loan.getPaymentmonth() || loan.getPaymentamount() == null)
+		{
+			
+		
+		data[0] = Math.ceil(
+				loan.calculateamount() - (loan.calculateamount() - loan.calculateinterestpermonth() * emi_months));
+
+		data[1] = Math.ceil(loan.getNumberofMonths() - emi_months);
+
+		
+		
+		}
+		else
+		{
+			Double loanamt = loan.calculateamount();
+			Double totalpaid = loan.calculateinterestpermonth() * emi_months + loan.getPaymentamount();
+
+			Double remamount = Math.ceil(loanamt - totalpaid);
+			data[0] = setAmountmax(Math.ceil(totalpaid), loanamt);
+			data[1] = Math.ceil(remamount / loan.calculateinterestpermonth());	
+		}
+		
+		return data;
+
+	}
+
+
+	private Double setAmountmax(Double value, Double loanval) {
+
+		return (value > loanval) ? loanval : value;
+
+	}
+
+}
